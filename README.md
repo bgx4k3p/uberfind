@@ -1,14 +1,3 @@
-
-### Usage Examples
-Default settings with no arguments - Search recursively in the current folder for keywords 'username' and 'password'. Look inside .dll, .xml, .db, .conf, .ini, .txt, .dat, .vbs, .bat files, then return 50 characters before/after the keyword from any line that contains it with the line number and the name of the file. Results go in 'results.txt' inside the current folder.
-
-`python uberfind.py`
-
-Search inside .dll files in c:\Windows folder for keyword 'password' verbosely:
-
-`python uberfind.py -p c:\Windows -e .dll -k password -v`
-
-
 Uberfind
 ==============
 Uberfind is a search tool for finding hardcoded usernames/passwords, encryption keys and other sensitive information inside multiple files. It performs a recursive search for all files within a given path, it can filter files based on the extension and it generates a results file with a number of characters before and after the search string. Parsing trough thousands of files happens in seconds. 
