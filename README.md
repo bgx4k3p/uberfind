@@ -1,4 +1,4 @@
-Uberind
+Uberfind
 ==============
 Uberfind is a search tool for finding hardcoded usernames/passwords, encryption keys and other sensitive information inside multiple files. It performs a recursive search for all files within a given path, it can filter files based on the extension and it generates a results file with a number of characters before and after the search string. Parsing trough thousands of files in seconds. 
 
