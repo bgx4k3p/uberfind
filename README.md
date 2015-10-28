@@ -1,4 +1,4 @@
-Uberfind
+Uberind
 ==============
 Uberfind is a search tool for finding hardcoded usernames/passwords, encryption keys and other sensitive information inside multiple files. It performs a recursive search for all files within a given path, it can filter files based on the extension and it generates a results file with a number of characters before and after the search string. Parsing trough thousands of files in seconds. 
 
@@ -33,3 +33,26 @@ Search inside .dll files in c:\Windows folder for keyword 'password' verbosely:
 
     python uberfind.py -p c:\Windows -e .dll -k password -v
 
+
+Sample Output
+--------------
+
+    $ python uberfind.py -p /Users/TEMP/ -k password
+
+    $$\   $$\ $$\                           $$$$$$$$\ $$\                 $$\
+    $$ |  $$ |$$ |                          $$  _____|\__|                $$ |
+    $$ |  $$ |$$$$$$$\   $$$$$$\   $$$$$$\  $$ |      $$\ $$$$$$$\   $$$$$$$ |
+    $$ |  $$ |$$  __$$\ $$  __$$\ $$  __$$\ $$$$$\    $$ |$$  __$$\ $$  __$$ |
+    $$ |  $$ |$$ |  $$ |$$$$$$$$ |$$ |  \__|$$  __|   $$ |$$ |  $$ |$$ /  $$ |
+    $$ |  $$ |$$ |  $$ |$$   ____|$$ |      $$ |      $$ |$$ |  $$ |$$ |  $$ |
+    \$$$$$$  |$$$$$$$  |\$$$$$$$\ $$ |      $$ |      $$ |$$ |  $$ |\$$$$$$$ |
+     \______/ \_______/  \_______|\__|      \__|      \__|\__|  \__| \_______|
+    
+    
+    Search path: /Users/TEMP/
+    Keywords: password
+    File extensions: .dll .xml .db .conf .ini .txt .dat .vbs .bat
+    Number of characters before and after a keyword: 25
+    Searched through 759 files.
+    Found keyword in 34 files.
+    For more details, check the results file: /Users/TEMP/results.txt

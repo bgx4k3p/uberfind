@@ -81,7 +81,7 @@ def searcherRegex(outfile, infile, lookup, n, v):
                         if match.span()[0]-n < 0:
                             tmp = line[0:end+n] + '\n'
                         else:
-                            tmp = line[abs(start-n):abs(end+n)] + '\n'
+                            tmp = line[start-n:end+n] + '\n'
 
                         # Write the file path once
                         if writepath:
@@ -109,7 +109,7 @@ def main():
     keywords = ['password', 'username']
     file_ext = ['.dll', '.xml', '.db', '.conf', '.ini', '.txt', '.dat', '.vbs', '.bat']
     results = 'results.txt'
-    chars = 20
+    chars = 25
     path = os.getcwd()
     all_files = False
     verbose = False
@@ -179,7 +179,7 @@ def main():
 
         print "Searched through", len(files_to_search), 'files.'
         print "Found keyword in", count, 'files.'
-        print "For more details, check the results file:", os.path.realpath(results)
+        print "For more details, check the results file:", os.path.realpath(results) + "\n"
     r.close()
 
 
