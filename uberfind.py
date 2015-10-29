@@ -5,8 +5,8 @@ import re
 
 __description__ = 'Quick script to parse trough files/folders recursively and search for a keyword.'
 __author__ = 'bgx4k3p'
-__version__ = '1.2'
-__date__ = '2015/10/28'
+__version__ = '1.3'
+__date__ = '2015/10/29'
 
 """ SETTINGS
 path - Path to search in recursively, default is the current directory
@@ -27,7 +27,8 @@ def listAllFiles(path):
     # Walk trough all files and subdirectories
     for (dirname, dirnames, filenames) in os.walk(path):
         for filename in filenames:
-            # Append filename to list
+
+            # Append filename to a list
             flist.append(os.path.join(dirname, filename))
 
     return flist
@@ -50,7 +51,7 @@ def filterFileTypes(filelist, extensions):
     return filtered
 
 
-# Function to search for a keyword in an input file and write the results to an output file using REGEX
+# Function to search for a list of keywords in an input file and write the results to an output file, using Regex
 def searcherRegex(outfile, infile, lookup, n, v):
 
     writepath = True
@@ -78,10 +79,10 @@ def searcherRegex(outfile, infile, lookup, n, v):
                         end = match.span()[1]
 
                         # Truncate line to get only 'n' characters before and after the keyword
-                        if match.span()[0]-n < 0:
-                            tmp = line[0:end+n] + '\n'
+                        if match.span()[0] - n < 0:
+                            tmp = line[0:end + n] + '\n'
                         else:
-                            tmp = line[start-n:end+n] + '\n'
+                            tmp = line[start - n:end + n] + '\n'
 
                         # Write the file path once
                         if writepath:
@@ -90,7 +91,8 @@ def searcherRegex(outfile, infile, lookup, n, v):
                             if v:
                                 print (os.path.realpath(infile))
 
-                            outfile.write('=== FILE ====>>>   ' + os.path.realpath(infile) + '\n')
+                            # Write the filename in the results file
+                            outfile.write('=== FILE ===>   ' + os.path.realpath(infile) + '\n')
                             writepath = False
                             counter += 1
 
@@ -105,9 +107,10 @@ def searcherRegex(outfile, infile, lookup, n, v):
 
 # MAIN
 def main():
+
     # DEFAULT VALUES
     keywords = ['password', 'username']
-    file_ext = ['.dll', '.xml', '.db', '.conf', '.ini', '.txt', '.dat', '.vbs', '.bat']
+    file_ext = ['.dll', '.xml', '.db', '.conf', '.ini', '.txt', '.dat', '.vbs', '.bat', '.yml']
     results = 'results.txt'
     chars = 25
     path = os.getcwd()
@@ -117,8 +120,8 @@ def main():
     # Handle arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", action='store', help="Specify path to search in", dest="path")
-    parser.add_argument("-k", action='append', help="Specify keywords to search for", dest="keywords")
-    parser.add_argument("-e", action='append', help="Specify file types to search in", dest="extensions")
+    parser.add_argument("-k", action='store', help="Specify keywords to search for", dest="keywords")
+    parser.add_argument("-e", action='store', help="Specify file types to search in", dest="extensions")
     parser.add_argument("-r", action='store', help="Specify results output file, default 'results.txt'", dest="results")
     parser.add_argument("-n", action='store', help="Number of characters to return before and after a keyword",
                         dest="chars")
@@ -126,14 +129,17 @@ def main():
     parser.add_argument("-v", "--verbose", action='store_true', help="Enable verbosity", dest="verbose")
     args = parser.parse_args()
 
+    # Set variables
     if args.verbose:
         verbose = args.verbose
     if args.path:
         path = args.path
     if args.keywords:
-        keywords = args.keywords
+        # Split the string into multiple values
+        keywords = [i for i in args.keywords.split(',')]
     if args.extensions:
-        file_ext = args.extensions
+        # Split the string into multiple values and add '.' to each extension
+        file_ext = ['.'+i for i in args.extensions.split(',')]
     if args.results:
         results = args.results
     if args.chars:
@@ -156,10 +162,9 @@ def main():
         print ' \______/ \_______/  \_______|\__|      \__|      \__|\__|  \__| \_______|'
         print '\n'
         print "Search path:", path
-        print "Keywords:", ' '.join(str(keyword) for keyword in keywords)
-        print "File extensions:", ' '.join(str(ext) for ext in file_ext)
-        print "Number of characters before and after a keyword:", chars
-        #print "Results file:", args.results
+        print "Keywords:", ', '.join(str(keyword) for keyword in keywords)
+        print "File extensions:", ', '.join(str(ext).replace('.', '') for ext in file_ext)
+        print "Return", chars, "characters before and after a keyword.\n"
 
         # Counter for the number of files containing a keyword
         count = 0
@@ -181,7 +186,6 @@ def main():
         print "Found keyword in", count, 'files.'
         print "For more details, check the results file:", os.path.realpath(results) + "\n"
     r.close()
-
 
 if __name__ == '__main__':
     main()

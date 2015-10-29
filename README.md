@@ -1,6 +1,6 @@
 Uberfind
 ==============
-Uberfind is a search tool for finding hardcoded usernames/passwords, encryption keys and other sensitive information inside multiple files. It performs a recursive search for all files within a given path, it can filter files based on the extension and it generates a results file with a number of characters before and after the search string. Parsing trough thousands of files in seconds. 
+Uberfind is a search tool for finding hardcoded usernames/passwords, encryption keys and other sensitive information inside multiple files within a given path. It can parse all files recursively, or search based on file extensions. The output text file contains file names, line numbers and a specified number of characters before and after all instances of the searched keywords. Added support for accepting comma separated keywords and file extensions as arguments. The parsing is via case-insensitive regex, which allows for catching variations of the keywords. 
 
 
 Arguments
@@ -25,20 +25,20 @@ Arguments
 Usage Examples
 --------------
 
-Default settings with no arguments - Search recursively in the current folder for keywords 'username' and 'password'. Look inside .dll, .xml, .db, .conf, .ini, .txt, .dat, .vbs, .bat files, then return 50 characters before/after the keyword from any line that contains it with the line number and the name of the file. Results go in 'results.txt' inside the current folder.
+Default settings, no arguments: Search recursively in the current folder for keywords 'username' and 'password'. Look inside .dll, .xml, .db, .conf, .ini, .txt, .dat, .vbs, .bat, .yml files, then return 25 characters before/after each instance of the keyword from any line that contains it with the line number and the name of the file. Results go in 'results.txt' inside the current folder.
 
-    python uberfind.py
+    $ python uberfind.py
 
-Search inside .dll files in c:\Windows folder for keyword 'password' verbosely:
+Search inside **.dll** files in **c:\Windows** folder for keyword **'password'** verbosely:
 
-    python uberfind.py -p c:\Windows -e .dll -k password -v
-
+    $ python uberfind.py -p c:\Windows -e .dll -k password -v
 
 Sample Output
 --------------
+Search inside **.yml**, **.db** and **.conf** files for the keywords **'user'** and **'password'** in the given path **/usr/local/share/metasploit-framework/**
 
-    $ python uberfind.py -p /Users/TEMP/ -k password
-
+    $ python uberfind.py -p /usr/local/share/metasploit-framework/ -k password,user -e yml,db,conf -v
+        
     $$\   $$\ $$\                           $$$$$$$$\ $$\                 $$\
     $$ |  $$ |$$ |                          $$  _____|\__|                $$ |
     $$ |  $$ |$$$$$$$\   $$$$$$\   $$$$$$\  $$ |      $$\ $$$$$$$\   $$$$$$$ |
@@ -49,10 +49,24 @@ Sample Output
      \______/ \_______/  \_______|\__|      \__|      \__|\__|  \__| \_______|
     
     
-    Search path: /Users/TEMP/
-    Keywords: password
-    File extensions: .dll .xml .db .conf .ini .txt .dat .vbs .bat
-    Number of characters before and after a keyword: 25
-    Searched through 759 files.
-    Found keyword in 34 files.
-    For more details, check the results file: /Users/TEMP/results.txt
+    Search path: /usr/local/share/metasploit-framework/
+    Keywords: password, user
+    File extensions: yml, db, conf
+    Return 25 characters before and after a keyword.
+    
+    /usr/local/share/metasploit-framework/config/database.yml
+    /usr/local/share/metasploit-framework/data/john/confs/john.conf
+    /usr/local/share/metasploit-framework/data/lab/test_lab.yml
+    /usr/local/share/metasploit-framework/data/lab/test_targets.yml
+    Searched through 12 files.
+    Found keyword in 4 files.
+    For more details, check the results file: /Users/Temp/uberfind/results.txt
+
+**results.txt**
+
+    === FILE ===>   /usr/local/share/metasploit-framework/config/database.yml
+    --> Found "user": Line 4
+      username: msf4
+    
+    --> Found "password": Line 5
+      password: msf4
