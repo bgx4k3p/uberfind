@@ -25,13 +25,13 @@ Arguments
 Usage Examples
 --------------
 
-Default settings, no arguments: Search recursively in the current folder for keywords 'username' and 'password'. Look inside .dll, .xml, .db, .conf, .ini, .txt, .dat, .vbs, .bat, .yml files, then return 25 characters before/after each instance of the keyword from any line that contains it with the line number and the name of the file. Results go in 'results.txt' inside the current folder.
+**Default settings**: Search recursively in the current folder for keywords 'username' and 'password'. Look inside .dll, .xml, .db, .conf, .ini, .txt, .dat, .vbs, .bat, .yml files, then return 25 characters before/after each instance of the keyword from any line that contains it with the line number and the name of the file. Results go in 'results.txt' inside the current folder.
 
     $ python uberfind.py
 
 Search inside **.dll** files in **c:\Windows** folder for keyword **'password'** verbosely:
 
-    $ python uberfind.py -p c:\Windows -e .dll -k password -v
+    $ python uberfind.py -p c:\Windows -e dll -k password -v
 
 Sample Output
 --------------
