@@ -120,8 +120,8 @@ def main():
     # Handle arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", action='store', help="Specify path to search in", dest="path")
-    parser.add_argument("-k", action='store', help="Specify keywords to search for", dest="keywords")
-    parser.add_argument("-e", action='store', help="Specify file types to search in", dest="extensions")
+    parser.add_argument("-k", nargs="*", action='store', help="Specify keywords to search for", dest="keywords")
+    parser.add_argument("-e", nargs="*", action='store', help="Specify file types to search in", dest="extensions")
     parser.add_argument("-r", action='store', help="Specify results output file, default 'results.txt'", dest="results")
     parser.add_argument("-n", action='store', help="Number of characters to return before and after a keyword",
                         dest="chars")
@@ -136,10 +136,12 @@ def main():
         path = args.path
     if args.keywords:
         # Split the string into multiple values
-        keywords = [i for i in args.keywords.split(',')]
+        # keywords = [i for i in args.keywords.split(',')]
+        keywords = args.keywords
     if args.extensions:
         # Split the string into multiple values and add '.' to each extension
-        file_ext = ['.'+i for i in args.extensions.split(',')]
+        # file_ext = ['.'+i for i in args.extensions.split(',')]
+        file_ext = args.extensions
     if args.results:
         results = args.results
     if args.chars:
