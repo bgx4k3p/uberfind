@@ -19,38 +19,6 @@ verbose - Enable verbosity
 """
 
 
-# Function to return a list of file names in a given path recursively
-def listAllFiles(path):
-
-    flist = []
-
-    # Walk trough all files and subdirectories
-    for (dirname, dirnames, filenames) in os.walk(path):
-        for filename in filenames:
-
-            # Append filename to a list
-            flist.append(os.path.join(dirname, filename))
-
-    return flist
-
-
-# Function to filter a list of file names with certain extensions
-def filterFileTypes(filelist, extensions):
-
-    filtered = []
-
-    for f in filelist:
-
-        # Split the extension from the path and normalise it to lowercase.
-        ext = os.path.splitext(f)[-1].lower()
-
-        # Check the file extension and append on the list if matching.
-        if ext in extensions:
-            filtered.append(f)
-
-    return filtered
-
-
 # Function to search for a list of keywords in an input file and write the results to an output file, using Regex
 def searcherRegex(outfile, infile, lookup, n, v):
 
@@ -153,24 +121,23 @@ def main():
         # Counter for the number of files containing a keyword
         count = 0
 
-        # Get a list of all files in the path recursively
-        files = listAllFiles(args.path)
+        matched_files = 0
 
-        # Enable file extensions filter or search all files
-        if args.all_files is False:
-            files_to_search = filterFileTypes(files, args.extensions)
-        else:
-            files_to_search = files
+        for root, dirs, files in os.walk(args.path):
+            for filename in files:
+                fname, ext = os.path.splitext(filename)
+                if ext not in args.extensions:
+                    continue
 
-        if len(files_to_search) == 0:
-            print "Unable to find any files matching the provided extensions: {}".format(", ".join(str(ext).replace('.', '') for ext in args.extensions))
-            return
+                matched_files += 1
 
-        # Perform search
-        for f in files_to_search:
-            count += searcherRegex(r, f, args.keywords, args.chars, args.verbose)
+                f = os.path.join(root, filename)
 
-        print "Searched through", len(files_to_search), 'files.'
+                # Perform search
+                # for f in files_to_search:
+                count += searcherRegex(r, f, args.keywords, args.chars, args.verbose)
+
+        print "Searched through {} files.".format(matched_files)
         print "Found keyword in", count, 'files.'
         print "For more details, check the results file:", os.path.realpath(args.results) + "\n"
 
