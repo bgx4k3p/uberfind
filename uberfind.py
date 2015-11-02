@@ -109,49 +109,31 @@ def searcherRegex(outfile, infile, lookup, n, v):
 def main():
 
     # DEFAULT VALUES
-    keywords = ['password', 'username']
-    file_ext = ['.dll', '.xml', '.db', '.conf', '.ini', '.txt', '.dat', '.vbs', '.bat', '.yml']
-    results = 'results.txt'
-    chars = 25
-    path = os.getcwd()
-    all_files = False
-    verbose = False
+    default_keywords = ['password', 'username']
+    default_file_ext = ['.dll', '.xml', '.db', '.conf', '.ini', '.txt', '.dat', '.vbs', '.bat', '.yml']
 
     # Handle arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", action='store', help="Specify path to search in", dest="path")
-    parser.add_argument("-k", nargs="*", action='store', help="Specify keywords to search for", dest="keywords")
-    parser.add_argument("-e", nargs="*", action='store', help="Specify file types to search in", dest="extensions")
-    parser.add_argument("-r", action='store', help="Specify results output file, default 'results.txt'", dest="results")
+    parser.add_argument("-p", action='store', help="Specify path to search in", dest="path", default=os.getcwd())
+    parser.add_argument("-k", nargs="*", action='store', help="Specify keywords to search for", dest="keywords", default=default_keywords)
+    parser.add_argument("-e", nargs="*", action='store', help="Specify file types to search in", dest="extensions", default=default_file_ext)
+    parser.add_argument("-r", action='store', help="Specify results output file, default 'results.txt'", dest="results", default="results.txt")
     parser.add_argument("-n", action='store', help="Number of characters to return before and after a keyword",
-                        dest="chars")
-    parser.add_argument("-a", action='store_true', help="Search ALL files, no filter", dest="all_files")
-    parser.add_argument("-v", "--verbose", action='store_true', help="Enable verbosity", dest="verbose")
+                        dest="chars", default=25)
+    parser.add_argument("-a", action='store_true', help="Search ALL files, no filter", dest="all_files", default=False)
+    parser.add_argument("-v", "--verbose", default=False, action='store_true', help="Enable verbosity", dest="verbose")
     args = parser.parse_args()
 
-    # Set variables
-    if args.verbose:
-        verbose = args.verbose
-    if args.path:
-        path = args.path
-    if args.keywords:
-        # Split the string into multiple values
-        # keywords = [i for i in args.keywords.split(',')]
-        keywords = args.keywords
-    if args.extensions:
-        # Split the string into multiple values and add '.' to each extension
-        # file_ext = ['.'+i for i in args.extensions.split(',')]
-        file_ext = args.extensions
-    if args.results:
-        results = args.results
-    if args.chars:
-        chars = args.chars
     if args.all_files:
         print "Searching ALL files!"
-        all_files = args.all_files
+
+    # Ensure all extensions have a . at the beginning (this removes the . if it's there, then adds it back)
+    args.extensions = [".{}".format(ext.replace('.', '')) for ext in args.extensions]
+
+    args.path = os.path.abspath(args.path)
 
     # Processing
-    with open(results, 'w') as r:
+    with open(args.results, 'w') as r:
 
         print '\n'
         print '$$\   $$\ $$\                           $$$$$$$$\ $$\                 $$\ '
@@ -163,31 +145,34 @@ def main():
         print '\$$$$$$  |$$$$$$$  |\$$$$$$$\ $$ |      $$ |      $$ |$$ |  $$ |\$$$$$$$ |'
         print ' \______/ \_______/  \_______|\__|      \__|      \__|\__|  \__| \_______|'
         print '\n'
-        print "Search path:", path
-        print "Keywords:", ', '.join(str(keyword) for keyword in keywords)
-        print "File extensions:", ', '.join(str(ext).replace('.', '') for ext in file_ext)
-        print "Return", chars, "characters before and after a keyword.\n"
+        print "Search path:", args.path
+        print "Keywords:", ', '.join(str(keyword) for keyword in args.keywords)
+        print "File extensions:", ', '.join(str(ext).replace('.', '') for ext in args.extensions)
+        print "Return", args.chars, "characters before and after a keyword.\n"
 
         # Counter for the number of files containing a keyword
         count = 0
 
         # Get a list of all files in the path recursively
-        files = listAllFiles(path)
+        files = listAllFiles(args.path)
 
         # Enable file extensions filter or search all files
-        if all_files is False:
-            files_to_search = filterFileTypes(files, file_ext)
+        if args.all_files is False:
+            files_to_search = filterFileTypes(files, args.extensions)
         else:
             files_to_search = files
 
+        if len(files_to_search) == 0:
+            print "Unable to find any files matching the provided extensions: {}".format(", ".join(str(ext).replace('.', '') for ext in args.extensions))
+            return
+
         # Perform search
         for f in files_to_search:
-            count += searcherRegex(r, f, keywords, chars, verbose)
+            count += searcherRegex(r, f, args.keywords, args.chars, args.verbose)
 
         print "Searched through", len(files_to_search), 'files.'
         print "Found keyword in", count, 'files.'
-        print "For more details, check the results file:", os.path.realpath(results) + "\n"
-    r.close()
+        print "For more details, check the results file:", os.path.realpath(args.results) + "\n"
 
 if __name__ == '__main__':
     main()
