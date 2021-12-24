@@ -1,12 +1,12 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 import os
 import argparse
 import re
 
 __description__ = 'Quick script to parse trough files/folders recursively and search for a keyword.'
 __author__ = 'bgx4k3p'
-__version__ = '1.3'
-__date__ = '2015/10/29'
+__version__ = '1.4'
+__date__ = '2021/12/24'
 
 """ SETTINGS
 path - Path to search in recursively, default is the current directory
@@ -145,26 +145,26 @@ def main():
     if args.chars:
         chars = args.chars
     if args.all_files:
-        print "Searching ALL files!"
+        print("Searching ALL files!")
         all_files = args.all_files
 
     # Processing
     with open(results, 'w') as r:
 
-        print '\n'
-        print '$$\   $$\ $$\                           $$$$$$$$\ $$\                 $$\ '
-        print '$$ |  $$ |$$ |                          $$  _____|\__|                $$ |'
-        print '$$ |  $$ |$$$$$$$\   $$$$$$\   $$$$$$\  $$ |      $$\ $$$$$$$\   $$$$$$$ |'
-        print '$$ |  $$ |$$  __$$\ $$  __$$\ $$  __$$\ $$$$$\    $$ |$$  __$$\ $$  __$$ |'
-        print '$$ |  $$ |$$ |  $$ |$$$$$$$$ |$$ |  \__|$$  __|   $$ |$$ |  $$ |$$ /  $$ |'
-        print '$$ |  $$ |$$ |  $$ |$$   ____|$$ |      $$ |      $$ |$$ |  $$ |$$ |  $$ |'
-        print '\$$$$$$  |$$$$$$$  |\$$$$$$$\ $$ |      $$ |      $$ |$$ |  $$ |\$$$$$$$ |'
-        print ' \______/ \_______/  \_______|\__|      \__|      \__|\__|  \__| \_______|'
-        print '\n'
-        print "Search path:", path
-        print "Keywords:", ', '.join(str(keyword) for keyword in keywords)
-        print "File extensions:", ', '.join(str(ext).replace('.', '') for ext in file_ext)
-        print "Return", chars, "characters before and after a keyword.\n"
+        print('\n')
+        print('$$\   $$\ $$\                           $$$$$$$$\ $$\                 $$\ ')
+        print('$$ |  $$ |$$ |                          $$  _____|\__|                $$ |')
+        print('$$ |  $$ |$$$$$$$\   $$$$$$\   $$$$$$\  $$ |      $$\ $$$$$$$\   $$$$$$$ |')
+        print('$$ |  $$ |$$  __$$\ $$  __$$\ $$  __$$\ $$$$$\    $$ |$$  __$$\ $$  __$$ |')
+        print('$$ |  $$ |$$ |  $$ |$$$$$$$$ |$$ |  \__|$$  __|   $$ |$$ |  $$ |$$ /  $$ |')
+        print('$$ |  $$ |$$ |  $$ |$$   ____|$$ |      $$ |      $$ |$$ |  $$ |$$ |  $$ |')
+        print('\$$$$$$  |$$$$$$$  |\$$$$$$$\ $$ |      $$ |      $$ |$$ |  $$ |\$$$$$$$ |')
+        print(' \______/ \_______/  \_______|\__|      \__|      \__|\__|  \__| \_______|')
+        print('\n')
+        print("Search path:", path)
+        print("Keywords:", ', '.join(str(keyword) for keyword in keywords))
+        print("File extensions:", ', '.join(str(ext).replace('.', '') for ext in file_ext))
+        print("Return", chars, "characters before and after a keyword.\n")
 
         # Counter for the number of files containing a keyword
         count = 0
@@ -182,10 +182,11 @@ def main():
         for f in files_to_search:
             count += searcherRegex(r, f, keywords, chars, verbose)
 
-        print "Searched through", len(files_to_search), 'files.'
-        print "Found keyword in", count, 'files.'
-        print "For more details, check the results file:", os.path.realpath(results) + "\n"
+        print("Searched through", len(files_to_search), 'files.')
+        print("Found keyword in", count, 'files.')
+        print("For more details, check the results file:", os.path.realpath(results) + "\n")
     r.close()
+
 
 if __name__ == '__main__':
     main()
